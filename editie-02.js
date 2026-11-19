@@ -24,25 +24,25 @@
      --------------------------------------------------------------------- */
   var FOTOS = [
     // te voet
-    { g: "voet",  src: "fotos/voet-kerk.jpg",            r: 1.34, w: 18.4, wo: 11.4, xo: 8.28,  yo: 4.74  },
-    { g: "voet",  src: "fotos/voet-wolken.jpg",          r: 1.34, w: 17.3, wo: 14.0, xo: 8.28,  yo: 18.04 },
-    { g: "voet",  src: "fotos/voet-graffiti.jpg",        r: 1.34, w: 19.6, wo: 13.6, xo: 8.28,  yo: 34.24 },
-    { g: "voet",  src: "fotos/voet-park.jpg",            r: 1.34, w: 18.7, wo: 10.7, xo: 8.28,  yo: 50.92 },
-    { g: "voet",  src: "fotos/voet-avond.jpg",           r: 1.34, w: 9.6,  wo: 9.6,  xo: 8.28,  yo: 63.55 },
-    { g: "voet",  src: "fotos/voet-koeien.jpg",          r: 1.34, w: 13.8, wo: 13.8, xo: 8.28,  yo: 74.75 },
+    { g: "voet",  src: "beelden/voet-kerk.jpg",            r: 1.34, w: 18.4, wo: 11.4, xo: 8.28,  yo: 4.74  },
+    { g: "voet",  src: "beelden/voet-wolken.jpg",          r: 1.34, w: 17.3, wo: 14.0, xo: 8.28,  yo: 18.04 },
+    { g: "voet",  src: "beelden/voet-graffiti.jpg",        r: 1.34, w: 19.6, wo: 13.6, xo: 8.28,  yo: 34.24 },
+    { g: "voet",  src: "beelden/voet-park.jpg",            r: 1.34, w: 18.7, wo: 10.7, xo: 8.28,  yo: 50.92 },
+    { g: "voet",  src: "beelden/voet-avond.jpg",           r: 1.34, w: 9.6,  wo: 9.6,  xo: 8.28,  yo: 63.55 },
+    { g: "voet",  src: "beelden/voet-koeien.jpg",          r: 1.34, w: 13.8, wo: 13.8, xo: 8.28,  yo: 74.75 },
 
     // fiets
-    { g: "fiets", src: "fotos/fiets-kanaal.jpg",         r: 0.75, w: 10.1, wo: 10.2, xo: 41.51, yo: 8.0   },
-    { g: "fiets", src: "fotos/fiets-speeltuin.jpg",      r: 1.34, w: 17.8, wo: 17.8, xo: 53.31, yo: 8.0   },
-    { g: "fiets", src: "fotos/fiets-baksteen.jpg",       r: 1.34, w: 13.0, wo: 13.0, xo: 41.51, yo: 29.43 },
-    { g: "fiets", src: "fotos/fiets-straat.jpg",         r: 1.34, w: 20.2, wo: 20.2, xo: 41.51, yo: 45.01 },
-    { g: "fiets", src: "fotos/fiets-boom.jpg",           r: 0.75, w: 10.3, wo: 10.4, xo: 41.51, yo: 68.1  },
+    { g: "fiets", src: "beelden/fiets-kanaal.jpg",         r: 0.75, w: 10.1, wo: 10.2, xo: 41.51, yo: 8.0   },
+    { g: "fiets", src: "beelden/fiets-speeltuin.jpg",      r: 1.34, w: 17.8, wo: 17.8, xo: 53.31, yo: 8.0   },
+    { g: "fiets", src: "beelden/fiets-baksteen.jpg",       r: 1.34, w: 13.0, wo: 13.0, xo: 41.51, yo: 29.43 },
+    { g: "fiets", src: "beelden/fiets-straat.jpg",         r: 1.34, w: 20.2, wo: 20.2, xo: 41.51, yo: 45.01 },
+    { g: "fiets", src: "beelden/fiets-boom.jpg",           r: 0.75, w: 10.3, wo: 10.4, xo: 41.51, yo: 68.1  },
 
     // trein
-    { g: "trein", src: "fotos/trein-regenboog.jpg",      r: 0.75, w: 13.4, wo: 13.4, xo: 81.53, yo: 9.05  },
-    { g: "trein", src: "fotos/trein-zonsondergang.jpg",  r: 1.34, w: 16.2, wo: 16.2, xo: 78.75, yo: 36.21 },
-    { g: "trein", src: "fotos/trein-bovenleiding.jpg",   r: 1.34, w: 17.2, wo: 17.2, xo: 77.79, yo: 54.8  },
-    { g: "trein", src: "fotos/trein-stam.jpg",           r: 1.34, w: 12.1, wo: 13.3, xo: 81.66, yo: 74.94 }
+    { g: "trein", src: "beelden/trein-regenboog.jpg",      r: 0.75, w: 13.4, wo: 13.4, xo: 81.53, yo: 9.05  },
+    { g: "trein", src: "beelden/trein-zonsondergang.jpg",  r: 1.34, w: 16.2, wo: 16.2, xo: 78.75, yo: 36.21 },
+    { g: "trein", src: "beelden/trein-bovenleiding.jpg",   r: 1.34, w: 17.2, wo: 17.2, xo: 77.79, yo: 54.8  },
+    { g: "trein", src: "beelden/trein-stam.jpg",           r: 1.34, w: 12.1, wo: 13.3, xo: 81.66, yo: 74.94 }
   ];
 
   /* =====================================================================
