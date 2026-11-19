@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "handwriting";
+  src: url("handwriting.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
 :root {
   --blauw: #0000ff;
   --wit: #ffffff;
@@ -57,13 +65,14 @@ html, body {
   color: var(--blauw);
   opacity: 0;
   transition: opacity .15s ease;
+  font-family: "handwriting", cursive;
 }
 
 .woord.zichtbaar { opacity: 1; }
 
-.woord-voet  { font-family: "Nothing You Could Do", cursive; font-size: calc(var(--u) * 2.9); }
-.woord-fiets { font-family: "Nothing You Could Do", cursive;                 font-size: calc(var(--u) * 2.6); }
-.woord-trein { font-family: "Nothing You Could Do", cursive;                 font-size: calc(var(--u) * 2.6); }
+.woord-voet  { font-size: calc(var(--u) * 2.9); }
+.woord-fiets { font-size: calc(var(--u) * 2.6); }
+.woord-trein { font-size: calc(var(--u) * 2.6); }
 
 /* ---------- terugpijltje ---------- */
 
