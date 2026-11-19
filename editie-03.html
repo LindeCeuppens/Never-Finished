@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Editie 03 – Altijd onderweg</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@700&family=Red+Hat+Display:ital,wght@1,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="editie-03.css">
+</head>
+<body>
+
+  <a class="terug" href="edities.html" aria-label="Terug naar edities">&larr;</a>
+
+  <!-- ===================== LAPTOP / GROOT SCHERM: TREIN ===================== -->
+  <div id="scene-trein" class="scene" hidden>
+
+    <!-- titel: jouw eigen SVG (titel-trein.svg) -->
+    <img class="titel-img" src="titel-trein.svg" alt="Altijd onderweg met de trein" draggable="false"
+         style="left:556px;top:-25px;width:1223px">
+
+
+    <svg class="sub" viewBox="0 0 2296 120" width="2296" height="120" style="top:480px">
+      <text x="598" y="65" textLength="1087" lengthAdjust="spacingAndGlyphs" font-size="58">De conducteur kijkt niet, graffiti erop los!</text>
+    </svg>
+
+    <!-- de trein (svg + graffiti-canvas) wordt door editie-03.js opgebouwd -->
+    <div id="trein"></div>
+
+    <div class="kleuren" id="kleuren-trein">
+      <button class="kleur actief" data-kleur="blauw"  style="left:122px;top:1266px;width:82px;height:82px" aria-label="Blauw"><i style="width:64px;height:64px;background:#0000ff"></i></button>
+      <button class="kleur"        data-kleur="wit"    style="left:122px;top:1379px;width:82px;height:82px" aria-label="Wit"><i style="width:64px;height:64px;background:#fff;border:1.5px solid #0000ff"></i></button>
+      <button class="kleur"        data-kleur="geel"   style="left:122px;top:1492px;width:82px;height:82px" aria-label="Geel"><i style="width:64px;height:64px;background:#ffff00"></i></button>
+    </div>
+
+    <button class="pil" id="stap-op" style="left:927px;top:1362px;width:370px;height:146px">
+      <svg viewBox="0 0 370 146" width="370" height="146">
+        <rect x=".75" y=".75" width="368.5" height="144.5" rx="72" fill="none" stroke="#0000ff" stroke-width="1.5"/>
+        <text x="55" y="92" textLength="198" lengthAdjust="spacingAndGlyphs" font-size="62">stap op</text>
+        <path d="M298 55 L322 73 L298 91" fill="none" stroke="#0000ff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <!-- reset: wist alle graffiti van de trein -->
+    <button class="reset" id="reset" aria-label="Reset: begin opnieuw" title="Reset" style="left:2092px;top:1492px;width:82px;height:82px">
+      <svg viewBox="0 0 82 82" width="82" height="82" fill="none" stroke="#0000ff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M60 28 A25 25 0 1 0 64 46"/>
+        <path d="M62 10 L60 28 L42 27"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- ===================== GSM: FIETS ===================== -->
+  <div id="scene-fiets" class="scene" hidden>
+
+    <!-- titel: jouw eigen SVG (titel-fiets.svg) -->
+    <img class="titel-img" src="titel-fiets.svg" alt="Altijd onderweg met de fiets" draggable="false"
+         style="left:180px;top:24px;width:909px">
+
+
+    <svg class="sub" viewBox="0 0 1170 100" width="1170" height="100" style="top:480px">
+      <text x="415" y="52" textLength="330" lengthAdjust="spacingAndGlyphs" font-size="40">Teken mijn wielen!</text>
+    </svg>
+
+    <!-- fiets: frame + tekenvlak voor de wielen -->
+    <div id="fiets-groep">
+      <svg class="frame" viewBox="0 0 1170 1560" width="1170" height="1560" fill="#0000ff" stroke="#0000ff" stroke-linecap="round" stroke-linejoin="round">
+        <!-- zadel -->
+        <path stroke="none" d="M462 757 Q462 745 500 745 L545 747 Q553 752 548 762 Q530 772 480 772 Q462 770 462 757Z"/>
+        <!-- stuur -->
+        <path stroke="none" d="M627 713 Q630 700 660 692 L690 690 Q700 692 697 705 Q690 722 650 728 Q632 730 627 713Z"/>
+        <!-- framebuizen -->
+        <g fill="none" stroke-width="10">
+          <path d="M700 700 L712 772 L738 905" stroke-width="11"/>
+          <path d="M497 778 Q600 770 708 772"/>
+          <path d="M495 780 L548 880"/>
+          <path d="M708 775 Q640 842 578 892"/>
+          <path d="M497 782 L424 905"/>
+          <path d="M424 912 L528 893" stroke-width="8"/>
+          <path d="M430 926 L532 906" stroke-width="8"/>
+          <path d="M572 936 L582 950" stroke-width="10"/>
+        </g>
+        <!-- trapas, pedaal, naven -->
+        <circle stroke="none" cx="556" cy="908" r="33"/>
+        <rect stroke="none" x="560" y="945" width="48" height="26" rx="13" transform="rotate(-6 584 958)"/>
+        <circle stroke="none" cx="418" cy="915" r="19"/>
+        <circle stroke="none" cx="739" cy="912" r="19"/>
+      </svg>
+      <canvas id="wiel-tekening"></canvas>
+      <canvas id="wiel-l" class="wiel"></canvas>
+      <canvas id="wiel-r" class="wiel"></canvas>
+    </div>
+
+    <div class="kleuren" id="kleuren-fiets">
+      <button class="kleur actief" data-kleur="blauw" style="left:77px;top:1215px;width:56px;height:56px" aria-label="Blauw (tekenen)"><i style="width:42px;height:42px;background:#0000ff"></i></button>
+      <button class="kleur"        data-kleur="wit"   style="left:77px;top:1292px;width:56px;height:56px" aria-label="Wit (gom)"><i style="width:42px;height:42px;background:#fff;border:1.5px solid #0000ff"></i></button>
+    </div>
+
+    <button class="pil" id="vertrek" style="left:454px;top:1357px;width:251px;height:99px">
+      <svg viewBox="0 0 251 99" width="251" height="99">
+        <rect x=".75" y=".75" width="249.5" height="97.5" rx="48" fill="none" stroke="#0000ff" stroke-width="1.5"/>
+        <text x="54" y="63" textLength="132" lengthAdjust="spacingAndGlyphs" font-size="40">vertrek</text>
+        <path d="M208 37 L222 50 L208 63" fill="none" stroke="#0000ff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <script src="editie-03.js"></script>
+</body>
+</html>

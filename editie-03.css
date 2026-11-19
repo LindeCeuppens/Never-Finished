@@ -1,0 +1,156 @@
+:root { --blauw: #0000ff; --wit: #ffffff; }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+[hidden] { display: none !important; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: var(--wit);
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+}
+
+body.sleept, body.sleept * { cursor: grabbing !important; }
+
+/* ---------- terugpijltje ---------- */
+
+.terug {
+  position: fixed;
+  top: 1.6vw;
+  left: 2vw;
+  z-index: 100;
+  font-family: "Gaegu", cursive;
+  font-weight: 700;
+  font-size: max(24px, 2.2vw);
+  line-height: 1;
+  color: var(--blauw);
+  text-decoration: none;
+}
+
+/* ---------- scènes (worden door JS geschaald) ---------- */
+
+.scene {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform-origin: 50% 0;
+  overflow: visible;
+}
+
+.scene svg.sub {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* titel = jouw eigen svg-bestand */
+.titel-img {
+  position: absolute;
+  height: auto;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+/* reset-pijltje (trein) */
+.reset {
+  position: absolute;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform .35s ease, opacity .2s ease;
+}
+.reset svg { display: block; }
+.reset:hover { transform: rotate(-90deg); }
+.reset:disabled { opacity: .35; cursor: default; transform: none; }
+
+/* ondertitel */
+.sub text {
+  font-family: "Red Hat Display", Arial, sans-serif;
+  font-style: italic;
+  font-weight: 800;
+  fill: var(--blauw);
+}
+
+/* knop (pil) */
+.pil {
+  position: absolute;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform .2s ease, opacity .2s ease;
+}
+.pil svg { display: block; overflow: visible; }
+.pil text {
+  font-family: "Red Hat Display", Arial, sans-serif;
+  font-style: italic;
+  font-weight: 800;
+  fill: var(--blauw);
+}
+.pil:hover { transform: scale(1.03); }
+.pil:disabled { opacity: .35; cursor: default; transform: none; }
+
+/* kleurbolletjes */
+.kleur {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid var(--blauw);
+  border-radius: 50%;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+.kleur i { display: block; border-radius: 50%; pointer-events: none; }
+.kleur.actief { border-width: 3.5px; }
+.kleur:disabled { opacity: .35; cursor: default; }
+
+/* ---------- trein ---------- */
+
+#trein {
+  position: absolute;
+  left: 0;
+  top: 600px;
+  width: 6500px;
+  height: 600px;
+  will-change: transform;
+}
+#trein svg, #trein canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 6500px;
+  height: 600px;
+}
+#trein svg { pointer-events: none; }
+#trein canvas { cursor: crosshair; touch-action: none; }
+#trein.leeg-grijp canvas { cursor: grab; }
+
+/* ---------- fiets ---------- */
+
+#fiets-groep {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1170px;
+  height: 1560px;
+  pointer-events: none;
+  will-change: transform;
+}
+#fiets-groep .frame { position: absolute; left: 0; top: 0; pointer-events: none; }
+#fiets-groep canvas {
+  position: absolute;
+  left: 250px;
+  top: 640px;
+  width: 660px;
+  height: 470px;
+}
+#wiel-tekening { pointer-events: auto; touch-action: none; cursor: crosshair; }
+.wiel { display: none; pointer-events: none; }

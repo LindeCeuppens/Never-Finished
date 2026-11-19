@@ -1,0 +1,146 @@
+:root {
+  --blauw: #0000ff;
+  --wit: #ffffff;
+  --u: 1vw; /* wordt door editie.js overschreven */
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: var(--wit);
+  overflow: hidden;
+}
+
+/* ---------- foto's ---------- */
+
+#stage {
+  position: fixed;
+  inset: 0;
+}
+
+.foto {
+  position: absolute;
+  line-height: 0;
+  cursor: pointer;
+}
+
+.foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+#stage.anim .foto {
+  transition: left .7s cubic-bezier(.6,.05,.2,1),
+              top .7s cubic-bezier(.6,.05,.2,1),
+              width .7s cubic-bezier(.6,.05,.2,1);
+}
+
+/* ---------- woorden bij hover ---------- */
+
+#woorden {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.woord {
+  position: absolute;
+  white-space: nowrap;
+  line-height: 1;
+  color: var(--blauw);
+  opacity: 0;
+  transition: opacity .15s ease;
+}
+
+.woord.zichtbaar { opacity: 1; }
+
+.woord-voet  { font-family: "Nothing You Could Do", cursive; font-size: calc(var(--u) * 2.9); }
+.woord-fiets { font-family: "Nothing You Could Do", cursive;                 font-size: calc(var(--u) * 2.6); }
+.woord-trein { font-family: "Nothing You Could Do", cursive;                 font-size: calc(var(--u) * 2.6); }
+
+/* ---------- terugpijltje ---------- */
+
+.terug {
+  position: fixed;
+  top: 1.6vw;
+  left: 2vw;
+  z-index: 2000;
+  font-family: "Gaegu", cursive;
+  font-weight: 700;
+  font-size: max(22px, 2.2vw);
+  line-height: 1;
+  color: var(--blauw);
+  text-decoration: none;
+  transition: transform .2s ease;
+}
+
+.terug:hover { transform: translateX(-0.4vw); }
+
+/* ---------- sorteerknopjes ---------- */
+
+.bediening {
+  position: fixed;
+  left: 2vw;
+  bottom: 1.5vw;
+  z-index: 2000;
+  display: flex;
+  align-items: flex-end;
+  gap: 3.4vw;
+  background: var(--wit);
+}
+
+.groep { display: flex; flex-direction: column; gap: 0.5vw; }
+
+.label {
+  font-family: "Gaegu", cursive;
+  font-weight: 400;
+  font-style: italic;
+  font-size: max(11px, 0.95vw);
+  letter-spacing: 0.08em;
+  color: var(--blauw);
+}
+
+.schakelaar {
+  position: relative;
+  display: flex;
+  width: max(92px, 5.6vw);
+  height: max(26px, 1.75vw);
+  border: 1px solid var(--blauw);
+  background: var(--wit);
+}
+
+.schakelaar .thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: var(--blauw);
+  transition: transform .3s cubic-bezier(.6,.05,.2,1);
+}
+
+.schakelaar[data-stand="orde"] .thumb { transform: translateX(100%); }
+
+.schakelaar button {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-family: "Gaegu", cursive;
+  font-weight: 400;
+  font-size: max(11px, 0.9vw);
+  color: var(--blauw);
+  transition: color .3s ease;
+}
+
+.schakelaar[data-stand="chaos"] button[data-stand="chaos"],
+.schakelaar[data-stand="orde"]  button[data-stand="orde"] { color: var(--wit); }

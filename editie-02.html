@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Editie 01 – Altijd onderweg</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Itim&family=Nothing+You+Could+Do&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="editie.css">
+</head>
+<body>
+
+  <a class="terug" href="edities.html" aria-label="Terug naar edities">&larr;</a>
+
+  <!-- hier komen de foto's (worden door editie.js geplaatst) -->
+  <div id="stage"></div>
+
+  <!-- hier verschijnen de woorden Wandel / Fiets / Trein bij hover -->
+  <div id="woorden" aria-hidden="true"></div>
+
+  <!-- sorteerknopjes -->
+  <div class="bediening">
+    <div class="groep" data-groep="fiets">
+      <span class="label">FIETS</span>
+      <div class="schakelaar" data-stand="chaos">
+        <span class="thumb"></span>
+        <button type="button" data-stand="chaos">Chaos</button>
+        <button type="button" data-stand="orde">Orde</button>
+      </div>
+    </div>
+
+    <div class="groep" data-groep="trein">
+      <span class="label">TREIN</span>
+      <div class="schakelaar" data-stand="chaos">
+        <span class="thumb"></span>
+        <button type="button" data-stand="chaos">Chaos</button>
+        <button type="button" data-stand="orde">Orde</button>
+      </div>
+    </div>
+
+    <div class="groep" data-groep="voet">
+      <span class="label">TE VOET</span>
+      <div class="schakelaar" data-stand="chaos">
+        <span class="thumb"></span>
+        <button type="button" data-stand="chaos">Chaos</button>
+        <button type="button" data-stand="orde">Orde</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="editie.js"></script>
+</body>
+</html>

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Editie 05 — Mijn Dag</title>
+
+  <!-- VERVANG 'xxxxxxx' HIERONDER MET JOUW EIGEN ADOBE FONTS PROJECT ID -->
+  <link rel="stylesheet" href="https://use.typekit.net/xxxxxxx.css">
+
+  <style>
+    :root {
+      --font-main: "massilia", sans-serif;
+      --stroke-width: 4px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      /* De hoogte bepaalt hoe lang je moet scrollen voor de hele dag (07:45 - 22:00) */
+      height: 1600vh; 
+      font-family: var(--font-main);
+      font-weight: 700;
+      font-style: italic; /* Oblique */
+      color: #ffffff;
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    /* De grote verticale achtergrond-gradient die meescrollt met het moment van de dag */
+    .day-sky {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 1600vh;
+      z-index: 1;
+      background: linear-gradient(
+        180deg,
+        #020412 0%,     /* 07:45 - Nacht / Vroege ochtend */
+        #050a3a 6%,     /* Donkerblauw */
+        #1224b8 14%,    /* Diep ochtendblauw */
+        #6d7be8 21%,    /* Zacht paarsblauw */
+        #f5c6d6 27%,    /* Zonsopgang (heel lichtroze) */
+        #8cbbe8 35%,    /* Helder lichtblauw (ochtend/voormiddag) */
+        #7fb4e8 52%,    /* Daglicht blauw (middag) */
+        #87b8e6 68%,    /* Namiddag */
+        #f4b8c8 78%,    /* Zonsondergang (lichtroze) */
+        #6a67ce 86%,    /* Schemering paars */
+        #0c1466 93%,    /* Avond donkerblauw */
+        #02030d 100%    /* 22:00 - Nacht */
+      );
+    }
+
+    /* Vaste HUD (teller linksboven, eventuele navigatie rechtsboven) */
+    .hud {
+      position: fixed;
+      top: 28px;
+      left: 34px;
+      right: 34px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .commute-counter {
+      font-size: clamp(1rem, 1.5vw, 1.35rem);
+      letter-spacing: 0.02em;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    .edition-nav {
+      pointer-events: auto;
+      font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+      opacity: 0.85;
+    }
+
+    .edition-nav a {
+      color: #ffffff;
+      text-decoration: none;
+      margin-left: 14px;
+      transition: opacity 0.2s;
+    }
+
+    .edition-nav a:hover {
+      opacity: 0.6;
+    }
+
+    /* Vaste klok in het midden van het scherm */
+    .clock-stage {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .clock {
+      position: relative;
+      width: min(72vw, 72vh);
+      height: min(72vw, 72vh);
+    }
+
+    /* De 12 uurstreepjes rondom de klok in dezelfde dikte als de wijzers */
+    .tick {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: var(--stroke-width);
+      height: 18px;
+      background-color: #ffffff;
+      transform-origin: center center;
+      opacity: 0.85;
+    }
+
+    /* Middelpunt van de klok */
+    .center-dot {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 26px;
+      height: 26px;
+      background-color: #ffffff;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 5;
+    }
+
+    /* Wijzers */
+    .hand {
+      position: absolute;
+      bottom: 50%;
+      left: 50%;
+      width: var(--stroke-width);
+      background-color: #ffffff;
+      transform-origin: bottom center;
+      transform: translateX(-50%) rotate(0deg);
+      border-radius: 2px;
+    }
+
+    /* Korte wijzer (uren) */
+    .hour-hand {
+      height: 25%;
+      z-index: 3;
+    }
+
+    /* Lange wijzer (minuten) */
+    .minute-hand {
+      height: 43%;
+      z-index: 4;
+    }
+
+    /* Activiteitenteksten die tijdens het scrollen in beeld komen */
+    .activity-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 15;
+      pointer-events: none;
+    }
+
+    .activity-label {
+      position: absolute;
+      font-size: clamp(1.35rem, 2.7vw, 2.5rem);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+      text-shadow: 0 2px 14px rgba(0, 0, 0, 0.18);
+    }
+
+    .activity-label.active {
+      opacity: 1;
+    }
+
+    /* Scroll hint helemaal bovenaan */
+    .scroll-hint {
+      position: fixed;
+      bottom: 26px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.8;
+      z-index: 20;
+      transition: opacity 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- De achtergrond die door de dag heen verandert -->
+  <div class="day-sky"></div>
+
+  <!-- Teller linksboven & navigatie naar andere edities -->
+  <header class="hud">
+    <div class="commute-counter" id="commuteCounter">onderweg teller: 0min</div>
+    <nav class="edition-nav" aria-label="Edities">
+      <a href="index.html">← Overzicht</a>
+      <span>EDITIE 05</span>
+    </nav>
+  </header>
+
+  <!-- De analoge klok in het midden -->
+  <main class="clock-stage">
+    <div class="clock" id="clock">
+      <div class="hand hour-hand" id="hourHand"></div>
+      <div class="hand minute-hand" id="minuteHand"></div>
+      <div class="center-dot"></div>
+    </div>
+  </main>
+
+  <!-- Dynamische activiteitentitels -->
+  <div class="activity-layer" id="activityLayer"></div>
+
+  <!-- Subtiele scroll-instructie aan het begin -->
+  <div class="scroll-hint" id="scrollHint">Scroll om de dag te starten ↓</div>
+
+  <script>
+    // =========================================================================
+    // 1. TIJDSINSTELLINGEN (07:45 tot 22:00)
+    // =========================================================================
+    const START_MINUTES = 7 * 60 + 45;  // 07:45 = 465 minuten vanaf middernacht
+    const END_MINUTES   = 22 * 60 + 0;  // 22:00 = 1320 minuten vanaf middernacht
+    const TOTAL_DAY_MINUTES = END_MINUTES - START_MINUTES; // 855 minuten totaal
+
+    function toMins(hours, mins) {
+      return hours * 60 + mins;
+    }
+
+    // =========================================================================
+    // 2. DAGPROGRAMMA & ONDERWEG-TRAJECTEN
+    //    Elke reisperiode telt live de minuten op tijdens het scrollen.
+    //    Pas gerust de exacte starttijden van de activiteiten aan indien gewenst!
+    // =========================================================================
+    const schedule = [
+      {
+        title: "OPSTAAN",
+        start: toMins(7, 45),
+        end: toMins(8, 0),
+        travelMinutes: 0,
+        x: "26%", y: "28%", rotate: -14
+      },
+      {
+        title: "AANKLEDEN",
+        start: toMins(8, 0),
+        end: toMins(8, 15),
+        travelMinutes: 0,
+        x: "66%", y: "42%", rotate: 16
+      },
+      {
+        title: "ONTBIJTEN",
+        start: toMins(8, 15),
+        end: toMins(8, 40),
+        travelMinutes: 0,
+        x: "62%", y: "56%", rotate: -14
+      },
+      {
+        title: "WANDELEN NAAR FIETSENSTALLING",
+        start: toMins(8, 40),
+        end: toMins(8, 43), // +3 min (Totaal: 3 min)
+        travelMinutes: 3,
+        x: "24%", y: "42%", rotate: -8
+      },
+      {
+        title: "NAAR SCHOOL FIETSEN",
+        start: toMins(8, 43),
+        end: toMins(8, 56), // +13 min (Totaal: 16 min)
+        travelMinutes: 13,
+        x: "48%", y: "38%", rotate: -7
+      },
+      {
+        title: "LES",
+        start: toMins(9, 0),
+        end: toMins(12, 30),
+        travelMinutes: 0,
+        x: "26%", y: "23%", rotate: -7
+      },
+      {
+        title: "MIDDAGPAUZE",
+        start: toMins(12, 30),
+        end: toMins(13, 30),
+        travelMinutes: 0,
+        x: "64%", y: "30%", rotate: 11
+      },
+      {
+        title: "LES",
+        start: toMins(13, 30),
+        end: toMins(16, 30),
+        travelMinutes: 0,
+        x: "25%", y: "26%", rotate: -6
+      },
+      {
+        title: "NAAR KOT FIETSEN",
+        start: toMins(16, 35),
+        end: toMins(16, 49), // +14 min (Totaal: 30 min)
+        travelMinutes: 14,
+        x: "12%", y: "38%", rotate: 18
+      },
+      {
+        title: "VAN FIETSENSTALLING NAAR KOT WANDELEN",
+        start: toMins(16, 49),
+        end: toMins(16, 52), // +3 min (Totaal: 33 min)
+        travelMinutes: 3,
+        x: "12%", y: "78%", rotate: -6
+      },
+      {
+        title: "SPULLEN PAKKEN OP KOT",
+        start: toMins(16, 55),
+        end: toMins(17, 30),
+        travelMinutes: 0,
+        x: "58%", y: "27%", rotate: 9
+      },
+      {
+        title: "WANDELEN NAAR STATION",
+        start: toMins(17, 30),
+        end: toMins(17, 35), // +5 min (Totaal: 38 min)
+        travelMinutes: 5,
+        x: "22%", y: "68%", rotate: -10
+      },
+      {
+        title: "TREIN GENT-SINT-PIETERS → LEUVEN",
+        start: toMins(17, 40),
+        end: toMins(18, 49), // +1u9min = 69 min (Totaal: 107 min)
+        travelMinutes: 69,
+        x: "18%", y: "28%", rotate: -5
+      },
+      {
+        title: "FIETSEN NAAR HUIS",
+        start: toMins(18, 52),
+        end: toMins(19, 3), // +11 min (Totaal: 118 min)
+        travelMinutes: 11,
+        x: "54%", y: "66%", rotate: 12
+      },
+      {
+        title: "AVONDETEN & THUIS",
+        start: toMins(19, 10),
+        end: toMins(21, 30),
+        travelMinutes: 0,
+        x: "28%", y: "32%", rotate: -8
+      },
+      {
+        title: "SLAPEN",
+        start: toMins(21, 30),
+        end: toMins(22, 0),
+        travelMinutes: 0,
+        x: "60%", y: "48%", rotate: 10
+      }
+    ];
+
+    // =========================================================================
+    // 3. KLOKSTREEPJES EN ACTIVITEIT-ELEMENTEN GENEREREN
+    // =========================================================================
+    const clockEl = document.getElementById("clock");
+    const hourHand = document.getElementById("hourHand");
+    const minuteHand = document.getElementById("minuteHand");
+    const commuteCounter = document.getElementById("commuteCounter");
+    const activityLayer = document.getElementById("activityLayer");
+    const scrollHint = document.getElementById("scrollHint");
+
+    // 12 streepjes rondom de klok plaatsen (dezelfde dikte als de wijzers)
+    function createClockTicks() {
+      const radiusPercent = 46; // Afstand vanuit het midden
+      for (let i = 0; i < 12; i++) {
+        const tick = document.createElement("div");
+        tick.className = "tick";
+        const angle = i * 30;
+        // Draai naar het juiste uur en schuif naar buiten tot aan de rand van de wijzerplaat
+        tick.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-${clockEl.offsetWidth * (radiusPercent / 100)}px)`;
+        clockEl.appendChild(tick);
+      }
+    }
+
+    function updateTickPositions() {
+      const ticks = document.querySelectorAll(".tick");
+      const radiusPx = clockEl.offsetWidth * 0.46;
+      ticks.forEach((tick, i) => {
+        const angle = i * 30;
+        tick.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-${radiusPx}px)`;
+      });
+    }
+
+    // DOM-elementen maken voor de activiteiten
+    const activityElements = schedule.map((item) => {
+      const el = document.createElement("div");
+      el.className = "activity-label";
+      el.textContent = item.title;
+      el.style.left = item.x;
+      el.style.top = item.y;
+      el.style.transform = `rotate(${item.rotate}deg)`;
+      activityLayer.appendChild(el);
+      return { ...item, el };
+    });
+
+    createClockTicks();
+    window.addEventListener("resize", updateTickPositions);
+
+    // =========================================================================
+    // 4. SCROLL-LOGICA: KLOKWIJZERS, TELLER & ACTIVITEITEN UPDATEN
+    // =========================================================================
+    function formatTravelTime(totalMins) {
+      const rounded = Math.round(totalMins);
+      // Toont bv. "17min" of als je boven een uur zit "118min (1u 58min)"
+      if (rounded >= 60) {
+        const u = Math.floor(rounded / 60);
+        const m = rounded % 60;
+        return `${rounded}min (${u}u${m > 0 ? m + "min" : ""})`;
+      }
+      return `${rounded}min`;
+    }
+
+    function updateOnScroll() {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollProgress = maxScroll > 0 ? Math.min(Math.max(window.scrollY / maxScroll, 0), 1) : 0;
+
+      // Verberg scroll-hint zodra je begint te scrollen
+      scrollHint.style.opacity = scrollProgress > 0.01 ? "0" : "0.8";
+
+      // Huidige tijd in minuten berekenen (tussen 07:45 en 22:00)
+      const currentTotalMinutes = START_MINUTES + scrollProgress * TOTAL_DAY_MINUTES;
+
+      // 1. Analoge klokwijzers berekenen
+      const hours12 = (currentTotalMinutes / 60) % 12;
+      const minutes60 = currentTotalMinutes % 60;
+
+      const hourAngle = hours12 * 30;    // 360° / 12 uur = 30° per uur
+      const minuteAngle = minutes60 * 6; // 360° / 60 min = 6° per minuut
+
+      hourHand.style.transform = `translateX(-50%) rotate(${hourAngle}deg)`;
+      minuteHand.style.transform = `translateX(-50%) rotate(${minuteAngle}deg)`;
+
+      // 2. Onderweg-teller berekenen (som van alle verstreken + lopende reistrajecten)
+      let currentTravelMinutes = 0;
+
+      schedule.forEach((segment) => {
+        if (segment.travelMinutes > 0) {
+          if (currentTotalMinutes >= segment.end) {
+            // Traject is helemaal voorbij
+            currentTravelMinutes += segment.travelMinutes;
+          } else if (currentTotalMinutes > segment.start) {
+            // Je bent op dit moment onderweg in dit traject
+            const segmentDuration = segment.end - segment.start;
+            const elapsedInSegment = currentTotalMinutes - segment.start;
+            const ratio = elapsedInSegment / segmentDuration;
+            currentTravelMinutes += segment.travelMinutes * ratio;
+          }
+        }
+      });
+
+      commuteCounter.textContent = `onderweg teller: ${formatTravelTime(currentTravelMinutes)}`;
+
+      // 3. Juiste activiteitentekst tonen op basis van het tijdstip
+      activityElements.forEach((item) => {
+        if (currentTotalMinutes >= item.start && currentTotalMinutes <= item.end) {
+          item.el.classList.add("active");
+        } else {
+          item.el.classList.remove("active");
+        }
+      });
+    }
+
+    // Luister naar scroll-events (met requestAnimationFrame voor vloeiende 60fps animatie)
+    let ticking = false;
+    window.addEventListener("scroll", () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          updateOnScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+
+    // Initialiseer direct bij laden op 07:45
+    updateOnScroll();
+  </script>
+</body>
+</html>

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Editie 04 — Gent-St-Pieters → Leuven</title>
+
+  <!-- VERVANG 'xxxxxxx' HIERONDER MET JOUW EIGEN ADOBE FONTS PROJECT ID -->
+  <link rel="stylesheet" href="https://use.typekit.net/xxxxxxx.css">
+
+  <style>
+    :root {
+      --blue: #0000ff;
+      --white: #ffffff;
+      --font-main: "massilia", sans-serif;
+      --border-w: 2.5px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background-color: var(--white);
+      color: var(--blue);
+      font-family: var(--font-main);
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    /* Bovenste balk met terugpijl en tikkende klok (17:00) */
+    .top-bar {
+      position: relative;
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: var(--border-w) solid var(--blue);
+    }
+
+    .back-btn {
+      position: absolute;
+      left: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--blue);
+      text-decoration: none;
+      font-size: 2rem;
+      font-weight: 500;
+      line-height: 1;
+      padding: 6px 10px;
+      transition: opacity 0.15s;
+    }
+
+    .back-btn:hover {
+      opacity: 0.6;
+    }
+
+    .live-clock {
+      font-size: clamp(1.3rem, 2vw, 1.85rem);
+      font-weight: 700;
+      font-style: italic;
+      letter-spacing: 0.02em;
+    }
+
+    /* Subheader: GENT-ST-PIETERS -> | UPDATE VERTREKUREN | LEUVEN */
+    .control-bar {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr 1fr;
+      border-bottom: var(--border-w) solid var(--blue);
+      min-height: 76px;
+    }
+
+    .route-side {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(1rem, 1.8vw, 1.75rem);
+      font-weight: 700;
+      font-style: italic;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .update-btn {
+      appearance: none;
+      background: var(--white);
+      color: var(--blue);
+      border: none;
+      border-left: var(--border-w) solid var(--blue);
+      border-right: var(--border-w) solid var(--blue);
+      font-family: var(--font-main);
+      font-size: clamp(1.35rem, 2.5vw, 2.4rem);
+      font-weight: 800;
+      font-style: italic;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 14px 20px;
+      transition: background-color 0.12s, color 0.12s;
+    }
+
+    .update-btn:hover {
+      background-color: var(--blue);
+      color: var(--white);
+    }
+
+    .update-btn:active {
+      transform: scale(0.99);
+    }
+
+    /* Treinenlijst */
+    .timetable {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .train-row {
+      position: relative;
+      display: grid;
+      grid-template-columns: 24% 1fr 12%;
+      align-items: center;
+      min-height: calc((100vh - 152px) / 8);
+      padding: 14px 36px;
+      border-bottom: var(--border-w) solid var(--blue);
+      cursor: pointer;
+      transition: background-color 0.12s;
+    }
+
+    .train-row:hover {
+      background-color: rgba(0, 0, 255, 0.04);
+    }
+
+    .train-time {
+      font-size: clamp(1.1rem, 1.5vw, 1.45rem);
+      font-weight: 800;
+      font-style: italic;
+      white-space: nowrap;
+    }
+
+    .train-delay {
+      font-weight: 800;
+      font-style: italic;
+    }
+
+    .train-destination {
+      font-size: clamp(1.05rem, 1.45vw, 1.4rem);
+      line-height: 1.3;
+    }
+
+    .dest-main {
+      font-weight: 800;
+      font-style: italic;
+    }
+
+    .dest-via {
+      font-weight: 600;
+      font-style: normal;
+    }
+
+    .train-code {
+      text-align: right;
+      font-size: clamp(1.1rem, 1.5vw, 1.45rem);
+      font-weight: 800;
+      font-style: italic;
+    }
+
+    /* Schuine blauwe balk over een afgeschafte trein */
+    .cancelled-banner {
+      position: absolute;
+      left: 7%;
+      top: 50%;
+      width: 62%;
+      background-color: var(--blue);
+      color: var(--white);
+      font-family: var(--font-main);
+      font-weight: 800;
+      font-style: italic;
+      font-size: clamp(0.95rem, 1.45vw, 1.35rem);
+      text-transform: uppercase;
+      text-align: center;
+      padding: 9px 18px;
+      letter-spacing: 0.03em;
+      pointer-events: none;
+      z-index: 5;
+      box-shadow: 0 2px 0 rgba(255, 255, 255, 0.25);
+      animation: slamIn 0.16s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards;
+    }
+
+    /* Laag voor de enorme "JE BENT TE LAAT" balken */
+    .late-overlay-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 50;
+      overflow: hidden;
+    }
+
+    .late-banner {
+      position: absolute;
+      left: 50%;
+      width: 96vw;
+      max-width: 1380px;
+      background-color: var(--blue);
+      color: var(--white);
+      border: 2px solid var(--white);
+      font-family: var(--font-main);
+      font-weight: 800;
+      font-style: italic;
+      font-size: clamp(2.4rem, 7.2vw, 6.8rem);
+      text-transform: uppercase;
+      text-align: center;
+      padding: clamp(18px, 3.2vw, 38px) 20px;
+      letter-spacing: 0.03em;
+      line-height: 1;
+      pointer-events: auto;
+      cursor: pointer;
+      animation: bannerSlam 0.18s cubic-bezier(0.18, 0.89, 0.32, 1.2) forwards;
+    }
+
+    /* Subtiele reset-knop die verschijnt als het scherm vol staat met JE BENT TE LAAT */
+    .reset-trigger {
+      position: fixed;
+      bottom: 16px;
+      right: 20px;
+      z-index: 100;
+      background: var(--white);
+      color: var(--blue);
+      border: 2px solid var(--blue);
+      font-family: var(--font-main);
+      font-weight: 700;
+      font-style: italic;
+      font-size: 0.95rem;
+      padding: 6px 14px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .reset-trigger:hover {
+      background: var(--blue);
+      color: var(--white);
+    }
+
+    @keyframes slamIn {
+      from {
+        opacity: 0;
+        transform: translateY(-50%) scale(1.15) rotate(var(--rot, -2deg));
+      }
+      to {
+        opacity: 1;
+        transform: translateY(-50%) scale(1) rotate(var(--rot, -2deg));
+      }
+    }
+
+    @keyframes bannerSlam {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.18) rotate(var(--rot, -3deg));
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1) rotate(var(--rot, -3deg));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .control-bar {
+        grid-template-columns: 1fr;
+      }
+      .update-btn {
+        border-left: none;
+        border-right: none;
+        border-top: var(--border-w) solid var(--blue);
+        border-bottom: var(--border-w) solid var(--blue);
+      }
+      .train-row {
+        grid-template-columns: 28% 1fr 14%;
+        padding: 14px 16px;
+      }
+      .cancelled-banner {
+        width: 82%;
+        left: 6%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Bovenste balk met terugknop (<) en de tikkende klok -->
+  <header class="top-bar">
+    <a href="index.html" class="back-btn" aria-label="Terug naar overzicht">&lt;</a>
+    <div class="live-clock" id="liveClock">17:00</div>
+  </header>
+
+  <!-- Gent-St-Pieters -> | UPDATE VERTREKUREN | Leuven -->
+  <section class="control-bar">
+    <div class="route-side">GENT-ST-PIETERS -&gt;</div>
+    <button class="update-btn" id="updateBtn" type="button">UPDATE VERTREKUREN</button>
+    <div class="route-side">LEUVEN</div>
+  </section>
+
+  <!-- Lijst met treinen -->
+  <main class="timetable" id="timetable"></main>
+
+  <!-- Laag waarin de grote "JE BENT TE LAAT" balken verschijnen -->
+  <div class="late-overlay-layer" id="lateLayer"></div>
+
+  <!-- Knop om opnieuw te proberen zodra je helemaal te laat bent -->
+  <button class="reset-trigger" id="resetBtn" type="button">Opnieuw proberen ↺</button>
+
+  <script>
+    // =========================================================================
+    // 1. DE EXACT NAGEMAAKTE TREINENLIJST (GENT-ST-PIETERS -> LEUVEN)
+    // =========================================================================
+    const initialTrains = [
+      { id: 0, time: "17:09", mins: 17 * 60 + 9,  dest: "Luik-Guillemins",      via: "via Leuven, Tienen, Landen", code: "S2",  delay: 0, cancelled: false },
+      { id: 1, time: "17:56", mins: 17 * 60 + 56, dest: "Brussel & Hasselt",    via: "via Brussel, Leuven",         code: "S11", delay: 0, cancelled: false },
+      { id: 2, time: "18:07", mins: 18 * 60 + 7,  dest: "Brussel & Welkenraedt",via: "via Brussel, Leuven",         code: "S9",  delay: 0, cancelled: false },
+      { id: 3, time: "18:36", mins: 18 * 60 + 36, dest: "Brussel & Leuven",     via: "via Brussel, Leuven",         code: "S12", delay: 0, cancelled: false },
+      { id: 4, time: "18:58", mins: 18 * 60 + 58, dest: "Brussel & Hasselt",    via: "via Brussel, Leuven",         code: "S11", delay: 0, cancelled: false },
+      { id: 5, time: "19:21", mins: 19 * 60 + 21, dest: "Luik-Guillemins",      via: "via Leuven, Tienen, Landen", code: "S2",  delay: 0, cancelled: false },
+      { id: 6, time: "19:40", mins: 19 * 60 + 40, dest: "Brussel & Welkenraedt",via: "via Brussel, Leuven",         code: "S9",  delay: 0, cancelled: false },
+      { id: 7, time: "20:05", mins: 20 * 60 + 5,  dest: "Luik-Guillemins",      via: "via Leuven, Tienen, Landen", code: "S2",  delay: 0, cancelled: false }
+    ];
+
+    let trains = JSON.parse(JSON.stringify(initialTrains));
+    let currentMinutes = 17 * 60; // Begint exact om 17:00
+    let clickCount = 0;
+    let lateBannerCount = 0;
+
+    // Vaste schuine hoeken voor de "DEZE TREIN RIJDT NIET MEER" balkjes (zoals op de screenshots)
+    const cancelAngles = [-2.2, 1.8, -1.5, 2.4, -2.8, 1.5, -1.9, 2.1];
+
+    // Posities & hoeken voor de grote "JE BENT TE LAAT" balken (zoals op de laatste 4 screenshots)
+    const latePresets = [
+      { top: "54%", rot: -3.2 },
+      { top: "68%", rot: 5.8 },
+      { top: "36%", rot: -6.5 },
+      { top: "48%", rot: 2.4 },
+      { top: "77%", rot: -4.1 },
+      { top: "24%", rot: 4.5 }
+    ];
+
+    const timetableEl = document.getElementById("timetable");
+    const liveClockEl = document.getElementById("liveClock");
+    const updateBtn = document.getElementById("updateBtn");
+    const lateLayerEl = document.getElementById("lateLayer");
+    const resetBtn = document.getElementById("resetBtn");
+
+    // =========================================================================
+    // 2. KLOK DIE DOORLOOPT VANAF 17:00
+    // =========================================================================
+    function formatClock(totalMins) {
+      const h = Math.floor(totalMins / 60) % 24;
+      const m = totalMins % 60;
+      return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+    }
+
+    function updateClockDisplay() {
+      liveClockEl.textContent = formatClock(currentMinutes);
+    }
+
+    // Elke 1,4 seconde tikt er een minuut bij (en bij klikken springt de tijd nog sneller vooruit)
+    setInterval(() => {
+      currentMinutes += 1;
+      updateClockDisplay();
+      checkAutoMissedTrains();
+    }, 1400);
+
+    // =========================================================================
+    // 3. TREINENLIJST RENDEREN
+    // =========================================================================
+    function renderTimetable() {
+      timetableEl.innerHTML = "";
+
+      trains.forEach((train, index) => {
+        const row = document.createElement("div");
+        row.className = "train-row";
+
+        const delayText = train.delay > 0 ? `+${train.delay}` : "";
+
+        row.innerHTML = `
+          <div class="train-time">${train.time}<span class="train-delay">${delayText}</span></div>
+          <div class="train-destination">
+            <span class="dest-main">${train.dest}</span>
+            <span class="dest-via">${train.via}</span>
+          </div>
+          <div class="train-code">${train.code}</div>
+        `;
+
+        // Als de trein is afgeschaft: plak de blauwe balk "DEZE TREIN RIJDT NIET MEER" erover
+        if (train.cancelled) {
+          const banner = document.createElement("div");
+          banner.className = "cancelled-banner";
+          banner.textContent = "DEZE TREIN RIJDT NIET MEER";
+          const angle = cancelAngles[index % cancelAngles.length];
+          banner.style.setProperty("--rot", `${angle}deg`);
+          banner.style.transform = `translateY(-50%) rotate(${angle}deg)`;
+          row.appendChild(banner);
+        }
+
+        row.addEventListener("click", () => handleTrainClick(train.id));
+        timetableEl.appendChild(row);
+      });
+    }
+
+    // =========================================================================
+    // 4. FRUSTRATIE-LOGICA BIJ ELKE KLIK
+    // =========================================================================
+    const randomDelays = [2, 5, 8, 11, 13, 15, 18, 22, 27];
+
+    function pickDelay() {
+      return randomDelays[Math.floor(Math.random() * randomDelays.length)];
+    }
+
+    function spawnLateBanner() {
+      const preset = latePresets[lateBannerCount % latePresets.length];
+      const banner = document.createElement("div");
+      banner.className = "late-banner";
+      banner.textContent = "JE BENT TE LAAT";
+      banner.style.top = preset.top;
+      banner.style.setProperty("--rot", `${preset.rot}deg`);
+      banner.style.transform = `translate(-50%, -50%) rotate(${preset.rot}deg)`;
+
+      // Ook klikken op de grote balk zelf stapelt nog meer "JE BENT TE LAAT" balken op
+      banner.addEventListener("click", () => {
+        currentMinutes += 9;
+        updateClockDisplay();
+        spawnLateBanner();
+      });
+
+      lateLayerEl.appendChild(banner);
+      lateBannerCount++;
+      resetBtn.style.display = "block";
+    }
+
+    // Als de klok voorbij het vertrekuur (+ vertraging) tikt, valt die trein ook weg
+    function checkAutoMissedTrains() {
+      let changed = false;
+      trains.forEach((train) => {
+        if (!train.cancelled && currentMinutes > train.mins + train.delay) {
+          train.cancelled = true;
+          changed = true;
+        }
+      });
+      if (changed) {
+        renderTimetable();
+      }
+      // Als bijna alle treinen onbruikbaar zijn, verschijnt "JE BENT TE LAAT"
+      const unusableCount = trains.filter(t => t.cancelled || t.delay >= 15).length;
+      if (unusableCount >= 6 && lateBannerCount === 0) {
+        spawnLateBanner();
+      }
+    }
+
+    // Klik op een specifieke trein die je wilt nemen
+    function handleTrainClick(id) {
+      clickCount++;
+      // De klok tikt bij elke klik extra minuten weg terwijl je staat te wachten
+      currentMinutes += Math.floor(Math.random() * 6) + 5;
+      updateClockDisplay();
+
+      const train = trains.find(t => t.id === id);
+
+      if (!train.cancelled) {
+        if (train.delay === 0) {
+          // Eerste klik op deze trein: oftewel direct afgeschaft, oftewel dikke vertraging (+8, +13, etc.)
+          if (Math.random() < 0.42) {
+            train.cancelled = true;
+          } else {
+            train.delay = pickDelay();
+          }
+        } else {
+          // Je klikt nogmaals op een trein met vertraging -> nog meer vertraging of alsnog afgeschaft!
+          if (Math.random() < 0.65) {
+            train.cancelled = true;
+          } else {
+            train.delay += Math.floor(Math.random() * 10) + 6;
+          }
+        }
+      } else {
+        // Trein was al afgeschaft, maar je klikt uit frustratie verder -> een andere trein krijgt ook problemen
+        const available = trains.filter(t => !t.cancelled);
+        if (available.length > 0) {
+          const victim = available[Math.floor(Math.random() * available.length)];
+          if (Math.random() < 0.5) {
+            victim.cancelled = true;
+          } else {
+            victim.delay += pickDelay();
+          }
+        }
+      }
+
+      checkAutoMissedTrains();
+      renderTimetable();
+
+      // Na 5 klikken beginnen de enorme "JE BENT TE LAAT" balken over het scherm te knallen
+      if (clickCount >= 5) {
+        spawnLateBanner();
+      }
+    }
+
+    // Klik op "UPDATE VERTREKUREN"
+    updateBtn.addEventListener("click", () => {
+      clickCount += 2;
+      currentMinutes += 11;
+      updateClockDisplay();
+
+      // Verpest willekeurig 2 tot 3 treinen tegelijk
+      const activeTrains = trains.filter(t => !t.cancelled);
+      const countToAffect = Math.min(activeTrains.length, 3);
+
+      for (let i = 0; i < countToAffect; i++) {
+        const idx = Math.floor(Math.random() * activeTrains.length);
+        const target = activeTrains.splice(idx, 1)[0];
+        if (target.delay > 0 || Math.random() < 0.45) {
+          target.cancelled = true;
+        } else {
+          target.delay += pickDelay();
+        }
+      }
+
+      checkAutoMissedTrains();
+      renderTimetable();
+
+      if (clickCount >= 5) {
+        spawnLateBanner();
+      }
+    });
+
+    // Resetknop onderaan rechts
+    resetBtn.addEventListener("click", () => {
+      trains = JSON.parse(JSON.stringify(initialTrains));
+      currentMinutes = 17 * 60;
+      clickCount = 0;
+      lateBannerCount = 0;
+      lateLayerEl.innerHTML = "";
+      resetBtn.style.display = "none";
+      updateClockDisplay();
+      renderTimetable();
+    });
+
+    // Initialiseer de pagina
+    updateClockDisplay();
+    renderTimetable();
+  </script>
+</body>
+</html>
