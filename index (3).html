@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Altijd Onderweg — Home</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: #ffffff;
+      overflow: hidden;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    #home-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Laag 1: De aflopende achtergrondfoto */
+    #bg-photo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+      z-index: 1;
+      user-select: none;
+    }
+
+    /* Laag 2: De kronkelende boog waarin het gedichtje van links naar rechts reist */
+    #poem-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .poem-text {
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      fill: #0000FF; /* Pas dit eventueel aan als je tekst in het ontwerp wit of zwart is */
+    }
+
+    /* Laag 3: Het exacte logo / de grote titel 'ALTIJD ONDERWEG' */
+    #title-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+      z-index: 3;
+      user-select: none;
+    }
+
+    /* Laag 4: De interactieve knop 'VERTREK' onderaan in het midden */
+    #depart-wrapper {
+      position: absolute;
+      left: 50%;
+      bottom: 19%; /* Exact op de positie van de knop in jouw ontwerp */
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #depart-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 260px;
+      height: 76px;
+      padding: 0 42px;
+      background-color: #ffffff;
+      color: #0000FF;
+      border: 2.5px solid #0000FF;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+                  background-color 0.25s ease,
+                  color 0.25s ease,
+                  box-shadow 0.25s ease;
+      z-index: 2;
+    }
+
+    #depart-btn:hover {
+      background-color: #0000FF;
+      color: #ffffff;
+      transform: scale(1.04);
+      box-shadow: 0 10px 28px rgba(0, 0, 255, 0.2);
+    }
+
+    #depart-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Container voor de pijltjes die naar rechts uitschieten bij hover */
+    #arrows-burst {
+      position: absolute;
+      left: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 280px;
+      height: 120px;
+      pointer-events: none;
+      overflow: visible;
+      z-index: 1;
+    }
+
+    .flying-arrow {
+      position: absolute;
+      left: -8px;
+      color: #0000FF;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1;
+      opacity: 0;
+      pointer-events: none;
+      animation: shootRight var(--dur, 0.75s) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes shootRight {
+      0% {
+        opacity: 0;
+        transform: translate(0px, 0px) scale(0.7);
+      }
+      15% {
+        opacity: 1;
+      }
+      85% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--tx, 190px), var(--ty, 0px)) scale(1.1);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main id="home-container">
+    <!-- 1. Aflopende achtergrondfoto -->
+    <img id="bg-photo" src="achtergrond-homepage-foto.svg" alt="Achtergrond" />
+
+    <!-- 2. Kronkelend gedicht dat door de vaste boog van links naar rechts reist -->
+    <svg id="poem-layer" viewBox="0 0 1440 900" preserveAspectRatio="none" aria-label="Gedicht altijd onderweg">
+      <defs>
+        <!-- De boog blijft op dezelfde plek staan; de tekst schuift er van links naar rechts doorheen -->
+        <path
+          id="kronkel-pad"
+          d="M -300,520 C 120,340 380,680 720,470 C 1060,260 1320,620 1740,440"
+          fill="none"
+        />
+      </defs>
+
+      <text class="poem-text">
+        <textPath id="poem-textpath" href="#kronkel-pad" startOffset="-120%">
+          Van hier naar daar van daar naar hier, met de trein, met de fiets, te voet, van kot naar school van school naar kot van kot naar huis van huis naar kot van kot naar de winkel naar kot met de fiets, te voet, met de tram, met de trein naar huis. Van hier naar daar van daar naar hier, met de trein, met de fiets, te voet, van kot naar school van school naar kot van kot naar huis van huis naar kot van kot naar de winkel naar kot met de fiets, te voet, met de tram, met de trein naar huis.
+        </textPath>
+      </text>
+    </svg>
+
+    <!-- 3. Exacte titel / logo 'ALTIJD ONDERWEG' -->
+    <img id="title-layer" src="homepage-titel.svg" alt="Altijd Onderweg" />
+
+    <!-- 4. Interactieve knop 'VERTREK' die naar de overzichtspagina leidt -->
+    <div id="depart-wrapper">
+      <a href="edities.html" id="depart-btn">VERTREK</a>
+      <div id="arrows-burst" aria-hidden="true"></div>
+    </div>
+  </main>
+
+  <script>
+    // 1. Vloeiende beweging van het gedicht door de boog (van links naar rechts, en weer terug aan de linkerkant)
+    const textPath = document.getElementById('poem-textpath');
+    let offset = -135; // Start volledig buiten beeld aan de linkerkant
+    const speed = 0.085; // Snelheid waarmee de tekst reist
+
+    function animatePoem() {
+      offset += speed;
+      // Zodra de hele tekst rechts uit het frame is verdwenen, start hij weer aan de linkerkant
+      if (offset > 105) {
+        offset = -135;
+      }
+      textPath.setAttribute('startOffset', `${offset}%`);
+      requestAnimationFrame(animatePoem);
+    }
+    requestAnimationFrame(animatePoem);
+
+    // 2. Pijltjes die naar rechts uit de knop schieten tijdens hover
+    const departBtn = document.getElementById('depart-btn');
+    const arrowsBurst = document.getElementById('arrows-burst');
+    let hoverInterval = null;
+
+    function spawnArrow() {
+      const arrow = document.createElement('span');
+      arrow.className = 'flying-arrow';
+      arrow.textContent = '→';
+
+      const startY = (Math.random() - 0.5) * 44;
+      const travelX = 120 + Math.random() * 140;
+      const travelY = startY + (Math.random() - 0.5) * 28;
+      const duration = 0.55 + Math.random() * 0.35;
+
+      arrow.style.top = `calc(50% + ${startY}px - 12px)`;
+      arrow.style.setProperty('--tx', `${travelX}px`);
+      arrow.style.setProperty('--ty', `${travelY}px`);
+      arrow.style.setProperty('--dur', `${duration}s`);
+
+      arrowsBurst.appendChild(arrow);
+
+      setTimeout(() => {
+        arrow.remove();
+      }, duration * 1000 + 50);
+    }
+
+    departBtn.addEventListener('mouseenter', () => {
+      spawnArrow();
+      setTimeout(spawnArrow, 90);
+      setTimeout(spawnArrow, 180);
+      hoverInterval = setInterval(spawnArrow, 140);
+    });
+
+    departBtn.addEventListener('mouseleave', () => {
+      clearInterval(hoverInterval);
+      hoverInterval = null;
+    });
+  </script>
+</body>
+</html>

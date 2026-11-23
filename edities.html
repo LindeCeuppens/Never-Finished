@@ -1,30 +1,174 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Edities – Altijd onderweg</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Bungee&family=Dela+Gothic+One&family=Great+Vibes&family=Permanent+Marker&family=Raleway:wght@100&family=Roboto+Mono:wght@300&family=Rubik+Bubbles&family=Rock+Salt&family=Silkscreen:wght@700&family=Inter:wght@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body class="edities-pagina">
-  <header>
-    <a href="index.html" class="terug" aria-label="Terug naar home"><h1 class="edities-titel">EDITIES</h1></a>
-  </header>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edities — Overzicht</title>
+  <!-- Matter.js voor realistische zwaartekracht en botsingen -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  <main class="edities">
-    <a class="editie e01" href="editie-01.html"><span class="cijfer">01</span><small>EDITIE 01</small></a>
-    <a class="editie e03" href="editie-03.html"><span class="cijfer">03</span><small>EDITIE 03</small></a>
-    <a class="editie e02" href="editie-02.html"><span class="cijfer">02</span><small>EDITIE 02</small></a>
-    <a class="editie e04" href="editie-04.html"><span class="cijfer">04</span><small>EDITIE 04</small></a>
-    <a class="editie e05" href="editie-05.html"><span class="cijfer">05</span><small>EDITIE 05</small></a>
-    <a class="editie e06" href="editie-06.html"><span class="cijfer">06</span><small>EDITIE 06</small></a>
-    <a class="editie e07" href="editie-07.html"><span class="cijfer">07</span><small>EDITIE 07</small></a>
-    <a class="editie e08" href="editie-08.html"><span class="cijfer">08</span><small>EDITIE 08</small></a>
-    <a class="editie e09" href="editie-09.html"><span class="cijfer">09</span><small>EDITIE 09</small></a>
-    <a class="editie e10" href="editie-10.html"><span class="cijfer">10</span><small>EDITIE 10</small></a>
-  </main>
-</body>
-</html>
+    html, body {
+      width: 100%;
+      /* Iets hoger dan 100vh zodat de gebruiker echt kan scrollen om te schudden */
+      height: 160vh; 
+      background-color: #ffffff;
+      overflow-x: hidden;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    /* Het vaste scherm waarin de fysica plaatsvindt */
+    #viewport {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      transition: transform 0.05s linear;
+    }
+
+    /* Het centrale woord "EDITIES" (blijft zweven in het midden) */
+    #center-title {
+      position: absolute;
+      top: 46%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(42vw, 620px);
+      pointer-events: none;
+      z-index: 1;
+      user-select: none;
+    }
+
+    #center-title img,
+    #center-title svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* De klikbare editie-blokken (cijfer + ondertekst samen) */
+    .edition-item {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      text-decoration: none;
+      cursor: pointer;
+      z-index: 10;
+      transform-origin: center center;
+      will-change: transform;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .edition-item img,
+    .edition-item svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      pointer-events: none;
+    }
+
+    .edition-item:hover {
+      filter: brightness(0.85);
+    }
+
+    /* Subtiele scroll-hint onderaan (verdwijnt na scrollen) */
+    #scroll-hint {
+      position: fixed;
+      bottom: 14px;
+      right: 20px;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #0000FF;
+      opacity: 0.5;
+      pointer-events: none;
+      z-index: 20;
+      transition: opacity 0.4s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="viewport">
+    <!-- Centrale titel uit jouw SVG -->
+    <div id="center-title">
+      <img src="svg.titel-edities.svg" alt="EDITIES" />
+    </div>
+
+    <!-- Alle 10 edities met jouw exacte bestandsnamen -->
+    <a href="editie01.html" class="edition-item" data-id="1" data-x="0.18" data-y="0.15" data-w="130">
+      <img src="svg.editie-01.svg" alt="Editie 01" />
+    </a>
+
+    <a href="editie02.html" class="edition-item" data-id="2" data-x="0.39" data-y="0.27" data-w="135">
+      <img src="svg.editie-02.svg" alt="Editie 02" />
+    </a>
+
+    <a href="editie03.html" class="edition-item" data-id="3" data-x="0.65" data-y="0.15" data-w="155">
+      <img src="svg.editie-03.svg" alt="Editie 03" />
+    </a>
+
+    <a href="editie04.html" class="edition-item" data-id="4" data-x="0.84" data-y="0.36" data-w="155">
+      <img src="svg.editie-04.svg" alt="Editie 04" />
+    </a>
+
+    <a href="editie05.html" class="edition-item" data-id="5" data-x="0.80" data-y="0.68" data-w="135">
+      <img src="svg.editie-05.svg" alt="Editie 05" />
+    </a>
+
+    <a href="editie06.html" class="edition-item" data-id="6" data-x="0.63" data-y="0.87" data-w="110">
+      <img src="svg.editie-06.svg" alt="Editie 06" />
+    </a>
+
+    <a href="editie07.html" class="edition-item" data-id="7" data-x="0.47" data-y="0.69" data-w="155">
+      <img src="svg.editie-07.svg" alt="Editie 07" />
+    </a>
+
+    <a href="editie08.html" class="edition-item" data-id="8" data-x="0.28" data-y="0.86" data-w="115">
+      <img src="svg.editie-08.svg" alt="Editie 08" />
+    </a>
+
+    <a href="editie09.html" class="edition-item" data-id="9" data-x="0.16" data-y="0.65" data-w="165">
+      <img src="svg.editie-09.svg" alt="Editie 09" />
+    </a>
+
+    <a href="editie10.html" class="edition-item" data-id="10" data-x="0.12" data-y="0.37" data-w="105">
+      <img src="svg.editie-10.svg" alt="Editie 10" />
+    </a>
+  </div>
+
+  <div id="scroll-hint">Scroll om te schudden</div>
+
+  <script>
+    window.addEventListener('load', () => {
+      const { Engine, World, Bodies, Body, Runner } = Matter;
+
+      const viewport = document.getElementById('viewport');
+      const items = Array.from(document.querySelectorAll('.edition-item'));
+      let width = window.innerWidth;
+      let height = window.innerHeight;
+
+      // 1. Physics Engine aanmaken (start met zwaartekracht = 0)
+      const engine = Engine.create();
+      engine.gravity.y = 0;
+
+      // Muren & vloer rondom het scherm (zodat niets uit beeld valt)
+      const wallThickness = 120;
+      let ground = Bodies.rectangle(width / 2, height + wallThickness / 2 - 8, width * 2, wallThickness, {
+        isStatic: true,
+        restitution: 0.45,
+        friction: 0.6
+      });
+      let leftWall = Bodies.rectangle(-wallThickness / 2, height / 2, wallThickness, height * 3, {
+        isStatic: true,
+        restitution: 0.4
+      });
+      let rightWall = Bodies.rectangle(width + wallThickness / 2, height /

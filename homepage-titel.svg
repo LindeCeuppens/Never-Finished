@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 999.298">
+  <defs>
+    <style>
+      .cls-1 {
+        font-size: 62.009px;
+        letter-spacing: -.024em;
+      }
+
+      .cls-1, .cls-2 {
+        fill: blue;
+        font-family: handwriting, handwriting;
+      }
+
+      .cls-3 {
+        font-family: BadeenDisplay-Regular, 'Badeen Display';
+        font-size: 347.298px;
+        letter-spacing: -.025em;
+        stroke: blue;
+        stroke-width: 3px;
+      }
+
+      .cls-3, .cls-4 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        font-size: 294.993px;
+        letter-spacing: -.033em;
+        stroke: #fff;
+        stroke-miterlimit: 10;
+        stroke-width: 2px;
+      }
+    </style>
+  </defs>
+  <text class="cls-3" transform="translate(123.29 623.877) scale(.653 1)"><tspan x="0" y="0">ONDERWEG</tspan></text>
+  <text class="cls-2" transform="translate(389.35 425.397)"><tspan x="0" y="0">Altijd</tspan></text>
+  <g>
+    <rect class="cls-4" x="542.447" y="717.981" width="356.936" height="91.908" rx="45.954" ry="45.954"/>
+    <text class="cls-1" transform="translate(586.288 787.635)"><tspan x="0" y="0">VERTREK -&gt;</tspan></text>
+  </g>
+</svg>
