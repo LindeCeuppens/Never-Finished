@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Editie 05 — Mijn Dag</title>
 
-  <!-- VERVANG 'xxxxxxx' HIERONDER MET JOUW EIGEN ADOBE FONTS PROJECT ID -->
-  <link rel="stylesheet" href="https://use.typekit.net/xxxxxxx.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.typekit.net/stu0mlb.css">
 
   <style>
     :root {
@@ -57,40 +59,48 @@
       );
     }
 
-    /* Vaste HUD (teller linksboven, eventuele navigatie rechtsboven) */
+    /* Vaste HUD met de teller rechtsboven */
     .hud {
       position: fixed;
       top: 28px;
-      left: 34px;
       right: 34px;
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: center;
       z-index: 20;
       pointer-events: none;
+    }
+
+    .terug {
+      position: fixed;
+      top: 1.6vw;
+      left: 2vw;
+      z-index: 20;
+      font-family: "Gaegu", cursive;
+      font-weight: 700;
+      font-size: max(22px, 2.2vw);
+      line-height: 1;
+      color: #ffffff;
+      text-decoration: none;
+      transition: transform 0.2s ease;
+    }
+
+    .terug:hover {
+      transform: translateX(-0.4vw);
     }
 
     .commute-counter {
       font-size: clamp(1rem, 1.5vw, 1.35rem);
       letter-spacing: 0.02em;
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+      text-align: right;
     }
 
-    .edition-nav {
-      pointer-events: auto;
-      font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+    .edition-label {
+      display: block;
+      font-size: clamp(0.75rem, 1vw, 0.9rem);
       opacity: 0.85;
-    }
-
-    .edition-nav a {
-      color: #ffffff;
-      text-decoration: none;
-      margin-left: 14px;
-      transition: opacity 0.2s;
-    }
-
-    .edition-nav a:hover {
-      opacity: 0.6;
+      text-align: right;
     }
 
     /* Vaste klok in het midden van het scherm */
@@ -188,6 +198,9 @@
       bottom: 26px;
       left: 50%;
       transform: translateX(-50%);
+      font-family: "instrument-serif", sans-serif;
+      font-weight: 400;
+      font-style: italic;
       font-size: 0.95rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -202,13 +215,14 @@
   <!-- De achtergrond die door de dag heen verandert -->
   <div class="day-sky"></div>
 
-  <!-- Teller linksboven & navigatie naar andere edities -->
+  <a class="terug" href="edities.html" aria-label="Terug naar edities">&larr;</a>
+
+  <!-- Teller rechtsboven -->
   <header class="hud">
-    <div class="commute-counter" id="commuteCounter">onderweg teller: 0min</div>
-    <nav class="edition-nav" aria-label="Edities">
-      <a href="index.html">← Overzicht</a>
-      <span>EDITIE 05</span>
-    </nav>
+    <div>
+      <div class="commute-counter" id="commuteCounter">onderweg teller: 0min</div>
+      <span class="edition-label">EDITIE 05</span>
+    </div>
   </header>
 
   <!-- De analoge klok in het midden -->

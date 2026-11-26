@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Editie 04 — Gent-St-Pieters → Leuven</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@700&display=swap" rel="stylesheet">
   <!-- VERVANG 'xxxxxxx' HIERONDER MET JOUW EIGEN ADOBE FONTS PROJECT ID -->
   <link rel="stylesheet" href="https://use.typekit.net/xxxxxxx.css">
 
@@ -42,23 +45,21 @@
       border-bottom: var(--border-w) solid var(--blue);
     }
 
-    .back-btn {
-      position: absolute;
-      left: 24px;
-      top: 50%;
-      transform: translateY(-50%);
+    .terug {
+      position: fixed;
+      top: 1.6vw;
+      left: 2vw;
+      z-index: 2000;
+      font-family: "Gaegu", cursive;
+      font-weight: 700;
+      font-size: max(22px, 2.2vw);
+      line-height: 1;
       color: var(--blue);
       text-decoration: none;
-      font-size: 2rem;
-      font-weight: 500;
-      line-height: 1;
-      padding: 6px 10px;
-      transition: opacity 0.15s;
+      transition: transform 0.2s ease;
     }
 
-    .back-btn:hover {
-      opacity: 0.6;
-    }
+    .terug:hover { transform: translateX(-0.4vw); }
 
     .live-clock {
       font-size: clamp(1.3rem, 2vw, 1.85rem);
@@ -292,7 +293,7 @@
 
   <!-- Bovenste balk met terugknop (<) en de tikkende klok -->
   <header class="top-bar">
-    <a href="index.html" class="back-btn" aria-label="Terug naar overzicht">&lt;</a>
+    <a href="edities.html" class="terug" aria-label="Terug naar edities">&larr;</a>
     <div class="live-clock" id="liveClock">17:00</div>
   </header>
 

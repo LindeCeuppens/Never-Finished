@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Interactieve Reisschema Blokken</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@700&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
@@ -17,6 +20,24 @@
       min-height: 100vh;
       overflow: hidden;
       position: relative;
+    }
+
+    .terug {
+      position: fixed;
+      top: 1.6vw;
+      left: 2vw;
+      z-index: 2000;
+      font-family: "Gaegu", cursive;
+      font-weight: 700;
+      font-size: max(22px, 2.2vw);
+      line-height: 1;
+      color: #0000ff;
+      text-decoration: none;
+      transition: transform 0.2s ease;
+    }
+
+    .terug:hover {
+      transform: translateX(-0.4vw);
     }
 
     /* Stijl van elk individueel blauw blok */
@@ -68,6 +89,8 @@
   </style>
 </head>
 <body>
+
+  <a class="terug" href="edities.html" aria-label="Terug naar edities">&larr;</a>
 
   <!-- Canvas waarin alle blokken met initiële posities (x, y) staan -->
   <div id="board"></div>
