@@ -100,48 +100,48 @@
   <div id="viewport">
     <!-- Centrale titel uit jouw SVG -->
     <div id="center-title">
-      <img src="svg.titel-edities.svg" alt="EDITIES" />
+      <img src="svg/titel-edities.svg" alt="EDITIES" />
     </div>
 
-    <!-- Alle 10 edities met jouw exacte bestandsnamen -->
+    <!-- Alle 10 edities (cijfer + ondertekst zitten samen in één SVG zodat ze altijd samenblijven) -->
     <a href="editie01.html" class="edition-item" data-id="1" data-x="0.18" data-y="0.15" data-w="130">
-      <img src="svg.editie-01.svg" alt="Editie 01" />
+      <img src="svg/editie-01.svg" alt="Editie 01" />
     </a>
 
     <a href="editie02.html" class="edition-item" data-id="2" data-x="0.39" data-y="0.27" data-w="135">
-      <img src="svg.editie-02.svg" alt="Editie 02" />
+      <img src="svg/editie-02.svg" alt="Editie 02" />
     </a>
 
     <a href="editie03.html" class="edition-item" data-id="3" data-x="0.65" data-y="0.15" data-w="155">
-      <img src="svg.editie-03.svg" alt="Editie 03" />
+      <img src="svg/editie-03.svg" alt="Editie 03" />
     </a>
 
     <a href="editie04.html" class="edition-item" data-id="4" data-x="0.84" data-y="0.36" data-w="155">
-      <img src="svg.editie-04.svg" alt="Editie 04" />
+      <img src="svg/editie-04.svg" alt="Editie 04" />
     </a>
 
     <a href="editie05.html" class="edition-item" data-id="5" data-x="0.80" data-y="0.68" data-w="135">
-      <img src="svg.editie-05.svg" alt="Editie 05" />
+      <img src="svg/editie-05.svg" alt="Editie 05" />
     </a>
 
     <a href="editie06.html" class="edition-item" data-id="6" data-x="0.63" data-y="0.87" data-w="110">
-      <img src="svg.editie-06.svg" alt="Editie 06" />
+      <img src="svg/editie-06.svg" alt="Editie 06" />
     </a>
 
     <a href="editie07.html" class="edition-item" data-id="7" data-x="0.47" data-y="0.69" data-w="155">
-      <img src="svg.editie-07.svg" alt="Editie 07" />
+      <img src="svg/editie-07.svg" alt="Editie 07" />
     </a>
 
     <a href="editie08.html" class="edition-item" data-id="8" data-x="0.28" data-y="0.86" data-w="115">
-      <img src="svg.editie-08.svg" alt="Editie 08" />
+      <img src="svg/editie-08.svg" alt="Editie 08" />
     </a>
 
     <a href="editie09.html" class="edition-item" data-id="9" data-x="0.16" data-y="0.65" data-w="165">
-      <img src="svg.editie-09.svg" alt="Editie 09" />
+      <img src="svg/editie-09.svg" alt="Editie 09" />
     </a>
 
     <a href="editie10.html" class="edition-item" data-id="10" data-x="0.12" data-y="0.37" data-w="105">
-      <img src="svg.editie-10.svg" alt="Editie 10" />
+      <img src="svg/editie-10.svg" alt="Editie 10" />
     </a>
   </div>
 
@@ -171,4 +171,129 @@
         isStatic: true,
         restitution: 0.4
       });
-      let rightWall = Bodies.rectangle(width + wallThickness / 2, height /
+      let rightWall = Bodies.rectangle(width + wallThickness / 2, height / 2, wallThickness, height * 3, {
+        isStatic: true,
+        restitution: 0.4
+      });
+
+      World.add(engine.world, [ground, leftWall, rightWall]);
+
+      // 2. Elk SVG-blok omzetten naar een fysiek lichaam op zijn exacte startpositie
+      const editionBodies = items.map((el) => {
+        const startX = parseFloat(el.dataset.x) * width;
+        const startY = parseFloat(el.dataset.y) * height;
+        // Schaal breedte mee met schermgrootte (referentie 1440px breed)
+        const scaleFactor = Math.max(0.55, Math.min(1.2, width / 1440));
+        const itemWidth = parseFloat(el.dataset.w) * scaleFactor;
+        el.style.width = `${itemWidth}px`;
+
+        // Werkelijke hoogte ophalen nadat de afbeelding geladen is
+        const rect = el.getBoundingClientRect();
+        const itemHeight = rect.height || itemWidth * 1.1;
+
+        const body = Bodies.rectangle(startX, startY, itemWidth * 0.9, itemHeight * 0.9, {
+          restitution: 0.42,     // Lichte stuit bij neerkomen
+          friction: 0.5,         // Wrijving zodat ze op elkaar blijven liggen
+          frictionAir: 0.015,    // Luchtweerstand
+          density: 0.002,
+          chamfer: { radius: 8 } // Afgeronde hoeken zodat ze natuurlijk kantelen zoals in beeld 2
+        });
+
+        // Initieel op de exacte positie zetten
+        el.style.transform = `translate(${startX - itemWidth / 2}px, ${startY - itemHeight / 2}px) rotate(0deg)`;
+
+        return { el, body, w: itemWidth, h: itemHeight };
+      });
+
+      World.add(engine.world, editionBodies.map(item => item.body));
+
+      // Start de physics loop
+      const runner = Runner.create();
+      Runner.run(runner, engine);
+
+      // 3. Synchroniseer HTML/SVG-elementen met de physics-posities
+      let hasFallen = false;
+
+      function updateRender() {
+        editionBodies.forEach(({ el, body, w, h }) => {
+          const x = body.position.x - w / 2;
+          const y = body.position.y - h / 2;
+          const angle = body.angle;
+          el.style.transform = `translate(${x}px, ${y}px) rotate(${angle}rad)`;
+        });
+        requestAnimationFrame(updateRender);
+      }
+      requestAnimationFrame(updateRender);
+
+      // 4. Na exact 1 seconde: zwaartekracht inschakelen!
+      setTimeout(() => {
+        engine.gravity.y = 1.15;
+        hasFallen = true;
+
+        // Geef elk cijfer een heel subtiel duwtje/draaiing zodat ze natuurlijk neerkomen en stapelen
+        editionBodies.forEach(({ body }) => {
+          Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.04);
+          Body.setVelocity(body, {
+            x: (Math.random() - 0.5) * 1.5,
+            y: Math.random() * 1.2
+          });
+        });
+      }, 1000);
+
+      // 5. Bij scrollen: scherm schudt zacht & cijfers rommelen op en liggen daarna weer stil
+      let lastScrollY = window.scrollY;
+      let shakeTimeout = null;
+      const scrollHint = document.getElementById('scroll-hint');
+
+      window.addEventListener('scroll', () => {
+        if (!hasFallen) return;
+
+        if (scrollHint) {
+          scrollHint.style.opacity = '0';
+        }
+
+        const currentScrollY = window.scrollY;
+        const delta = Math.min(Math.abs(currentScrollY - lastScrollY), 60);
+        lastScrollY = currentScrollY;
+
+        if (delta < 2) return;
+
+        // Zachte visuele trilling van het scherm zelf
+        const shakeX = (Math.random() - 0.5) * 8;
+        const shakeY = (Math.random() - 0.5) * 8;
+        viewport.style.transform = `translate(${shakeX}px, ${shakeY}px)`;
+
+        clearTimeout(shakeTimeout);
+        shakeTimeout = setTimeout(() => {
+          viewport.style.transform = 'translate(0px, 0px)';
+        }, 120);
+
+        // Laat de cijfers en hun ondertekst opschudden en rommelen
+        const forceMultiplier = Math.max(0.35, delta / 45);
+        editionBodies.forEach(({ body }) => {
+          // Alleen extra impuls geven als ze niet al te hoog vliegen
+          if (body.position.y > height * 0.45) {
+            Body.setVelocity(body, {
+              x: body.velocity.x + (Math.random() - 0.5) * 4.5 * forceMultiplier,
+              y: - (2.5 + Math.random() * 4.5) * forceMultiplier
+            });
+            Body.setAngularVelocity(
+              body,
+              body.angularVelocity + (Math.random() - 0.5) * 0.09 * forceMultiplier
+            );
+          }
+        });
+      }, { passive: true });
+
+      // 6. Schermformaat aanpassen (responsive)
+      window.addEventListener('resize', () => {
+        width = window.innerWidth;
+        height = window.innerHeight;
+
+        Body.setPosition(ground, { x: width / 2, y: height + wallThickness / 2 - 8 });
+        Body.setPosition(rightWall, { x: width + wallThickness / 2, y: height / 2 });
+      });
+    });
+  </script>
+</body>
+</html>
