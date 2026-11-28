@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Editie 01 — Transport per dag - Okt 2026</title>
-  
-  <!-- Adobe Typekit (Massilia Medium) -->
+
+  <!-- Adobe Typekit -->
   <link rel="stylesheet" href="https://use.typekit.net/stu0mlb.css">
-  <!-- Google Fonts (Instrument Serif voor de zekerheid als fallback/aanvulling) -->
+  <!-- Instrument Serif fallback -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -16,8 +16,8 @@
     :root {
       --blue: #0000FF;
       --white: #FFFFFF;
-      --font-sans: "massilia", sans-serif;
-      --font-serif: "instrument-serif", "Instrument Serif", serif;
+      --font-sans: "massilia", "Arial Narrow", Arial, sans-serif;
+      --font-serif: "instrument-serif", "Instrument Serif", Georgia, serif;
     }
 
     * {
@@ -26,35 +26,37 @@
       padding: 0;
     }
 
-    body {
+    html, body {
+      width: 100%;
+      min-height: 100vh;
       background-color: var(--white);
       color: var(--blue);
       font-family: var(--font-sans);
       font-weight: 500;
       overflow-x: hidden;
-      min-height: 100vh;
+    }
+
+    body {
       display: flex;
       flex-direction: column;
     }
 
-    /* --- TOP HEADER (Overzicht) --- */
+    /* --- TOP HEADER --- */
     .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       padding: 24px 32px;
       height: 32vh;
-      min-height: 180px;
+      min-height: 160px;
     }
 
     .back-link {
       color: var(--blue);
       text-decoration: none;
-      font-size: 28px;
-      line-height: 1;
-      transition: transform 0.2s ease;
       display: inline-flex;
       align-items: center;
+      transition: transform 0.2s ease;
     }
 
     .back-link:hover {
@@ -82,7 +84,7 @@
     .day-row {
       position: relative;
       width: 100%;
-      height: 11.3vh; /* Zorgt ervoor dat de onderkant van de tekst netjes afgesneden wordt */
+      height: 11.3vh;
       min-height: 82px;
       border-bottom: 2px solid var(--blue);
       background-color: var(--white);
@@ -96,21 +98,357 @@
     .day-title {
       font-family: var(--font-sans);
       font-weight: 500;
-      font-size: clamp(3.4rem, 7.6vw, 7.2rem);
+      font-size: clamp(3.2rem, 7.6vw, 7.2rem);
       line-height: 0.88;
       letter-spacing: -0.02em;
       text-transform: uppercase;
       padding-left: 16px;
-      /* Standaard staat de tekst iets lager zodat de onderkant door overflow:hidden wordt afgesneden */
       transform: translateY(16px);
       transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    /* HOVER EFFECT: Blauwe balk, witte tekst, schuift omhoog zodat heel het woord leesbaar is */
+    /* HOVER EFFECT */
     .day-row:hover {
       background-color: var(--blue);
       color: var(--white);
     }
 
     .day-row:hover .day-title {
-      transform: translateY(4
+      transform: translateY(4px);
+    }
+
+    /* --- VOLLEDIG SCHERM DETAIL OVERLAY --- */
+    .detail-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: var(--blue);
+      color: var(--white);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 32px;
+      clip-path: inset(50% 0 50% 0);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: clip-path 0.55s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.2s ease, visibility 0.55s;
+    }
+
+    .detail-overlay.active {
+      clip-path: inset(0% 0 0% 0);
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .detail-header {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .detail-back-btn {
+      background: none;
+      border: none;
+      color: var(--white);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      padding: 4px;
+      transition: transform 0.2s ease;
+    }
+
+    .detail-back-btn:hover {
+      transform: translateX(-4px);
+    }
+
+    .detail-badge {
+      border: 1.5px solid var(--white);
+      padding: 5px 10px;
+      font-size: 11px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .detail-day-title {
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: clamp(3.2rem, 7.6vw, 7.2rem);
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      padding-bottom: 18px;
+      border-bottom: 2px solid var(--white);
+      margin-left: -32px;
+      margin-right: -32px;
+      padding-left: 32px;
+    }
+
+    /* --- TRANSPORT INFO & TYPEWRITER --- */
+    .transport-container {
+      margin-top: 42px;
+      padding-left: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 34px;
+      max-width: 900px;
+      overflow-y: auto;
+    }
+
+    .transport-item {
+      display: grid;
+      grid-template-columns: 95px 1fr;
+      align-items: baseline;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(1.35rem, 2.2vw, 1.95rem);
+      line-height: 1.35;
+    }
+
+    .transport-time {
+      text-decoration: underline;
+      text-underline-offset: 5px;
+      text-decoration-thickness: 1.5px;
+    }
+
+    .transport-desc {
+      white-space: pre-wrap;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      background-color: var(--white);
+      margin-left: 3px;
+      vertical-align: middle;
+      animation: blink 0.75s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    @media (max-width: 640px) {
+      .top-bar { padding: 18px 20px; height: 24vh; }
+      .day-row { height: 12.6vh; min-height: 68px; }
+      .day-title { transform: translateY(14px); }
+      .transport-container { padding-left: 0; gap: 24px; }
+      .transport-item { grid-template-columns: 75px 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-bar">
+    <a href="index.html" class="back-link" aria-label="Terug naar edities overzicht">
+      <svg width="16" height="28" viewBox="0 0 16 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14 2L2 14L14 26" stroke="#0000FF" stroke-width="2.5" stroke-linecap="square"/>
+      </svg>
+    </a>
+    <div class="badge">TRANSPORT PER DAG - OKT 2026</div>
+  </header>
+
+  <main class="days-list">
+    <div class="day-row" data-day="0">
+      <div class="day-title">VRIJDAG 02/10</div>
+    </div>
+    <div class="day-row" data-day="1">
+      <div class="day-title">ZATERDAG 03/10</div>
+    </div>
+    <div class="day-row" data-day="2">
+      <div class="day-title">ZONDAG 04/10</div>
+    </div>
+    <div class="day-row" data-day="3">
+      <div class="day-title">MAANDAG 05/10</div>
+    </div>
+    <div class="day-row" data-day="4">
+      <div class="day-title">DINSDAG 06/10</div>
+    </div>
+    <div class="day-row" data-day="5">
+      <div class="day-title">WOENSDAG 07/10</div>
+    </div>
+  </main>
+
+  <section class="detail-overlay" id="detailOverlay" aria-hidden="true">
+    <div class="detail-header">
+      <button class="detail-back-btn" id="closeDetailBtn" aria-label="Sluit dagoverzicht">
+        <svg width="14" height="24" viewBox="0 0 16 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14 2L2 14L14 26" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="square"/>
+        </svg>
+      </button>
+      <div class="detail-badge">TRANSPORT PER DAG - OKT 2026</div>
+    </div>
+
+    <h1 class="detail-day-title" id="detailDayTitle"></h1>
+    <div class="transport-container" id="transportContainer"></div>
+  </section>
+
+  <script>
+    const scheduleData = [
+      {
+        day: "VRIJDAG 02/10",
+        entries: [
+          { time: "08:30", text: "fietsen: kot -> school" },
+          { time: "12:45", text: "wandeling: school -> broodjeszaak -> school" },
+          { time: "17:15", text: "fietsen: school -> station Gent-Sint-Pieters" },
+          { time: "17:40", text: "trein: station Gent-Sint-Pieters -> station Leuven" },
+          { time: "18:55", text: "fietsen: station Leuven -> huis" }
+        ]
+      },
+      {
+        day: "ZATERDAG 03/10",
+        entries: [
+          { time: "10:15", text: "wandeling: huis -> bakker -> huis" },
+          { time: "14:00", text: "fietsen: huis -> Oude Markt Leuven" },
+          { time: "16:30", text: "fietsen: Oude Markt Leuven -> huis" }
+        ]
+      },
+      {
+        day: "ZONDAG 04/10",
+        entries: [
+          { time: "15:00", text: "fietsen: huis -> Albert Heijn -> huis" },
+          { time: "17:00", text: "hardlopen: huis -> Arenberg park (Heverlee) -> huis" },
+          { time: "21:00", text: "fietsen: huis -> station Leuven" },
+          { time: "21:10", text: "trein: station Leuven -> station Gent-Sint-Pieters" },
+          { time: "22:15", text: "wandeling: station Gent-Sint-Pieters -> kot" }
+        ]
+      },
+      {
+        day: "MAANDAG 05/10",
+        entries: [
+          { time: "08:40", text: "fietsen: kot -> school" },
+          { time: "16:30", text: "fietsen: school -> Delhaize -> kot" }
+        ]
+      },
+      {
+        day: "DINSDAG 06/10",
+        entries: [
+          { time: "09:15", text: "fietsen: kot -> school" },
+          { time: "13:00", text: "wandeling: school -> bibliotheek -> school" },
+          { time: "18:00", text: "fietsen: school -> kot" }
+        ]
+      },
+      {
+        day: "WOENSDAG 07/10",
+        entries: [
+          { time: "8:45", text: "fietsen: kot -> school" },
+          { time: "13:10", text: "wandeling: school -> ZARA" },
+          { time: "13:50", text: "wandeling: ZARA -> school" },
+          { time: "18:10", text: "fietsen: school -> kot" }
+        ]
+      }
+    ];
+
+    const detailOverlay = document.getElementById("detailOverlay");
+    const detailDayTitle = document.getElementById("detailDayTitle");
+    const transportContainer = document.getElementById("transportContainer");
+    const closeDetailBtn = document.getElementById("closeDetailBtn");
+    let activeTypingSession = 0;
+
+    document.querySelectorAll(".day-row").forEach((row) => {
+      row.addEventListener("click", function () {
+        const index = Number(this.getAttribute("data-day"));
+        openDayDetail(scheduleData[index], this);
+      });
+    });
+
+    function openDayDetail(item, rowElement) {
+      activeTypingSession++;
+      const currentSession = activeTypingSession;
+
+      const rect = rowElement.getBoundingClientRect();
+      const topPercent = (rect.top / window.innerHeight) * 100;
+      const bottomPercent = ((window.innerHeight - rect.bottom) / window.innerHeight) * 100;
+
+      detailOverlay.style.transition = "none";
+      detailOverlay.style.clipPath = `inset(${topPercent}% 0 ${bottomPercent}% 0)`;
+      detailOverlay.style.visibility = "visible";
+      detailOverlay.style.opacity = "1";
+
+      detailDayTitle.textContent = item.day;
+      transportContainer.innerHTML = "";
+      detailOverlay.setAttribute("aria-hidden", "false");
+
+      void detailOverlay.offsetWidth;
+
+      detailOverlay.style.transition = "clip-path 0.55s cubic-bezier(0.77, 0, 0.175, 1)";
+      detailOverlay.classList.add("active");
+      detailOverlay.style.clipPath = "inset(0% 0 0% 0)";
+
+      setTimeout(() => {
+        if (currentSession === activeTypingSession) {
+          typeEntriesSequentially(item.entries, currentSession);
+        }
+      }, 450);
+    }
+
+    function closeDayDetail() {
+      activeTypingSession++;
+      detailOverlay.classList.remove("active");
+      detailOverlay.style.clipPath = "inset(50% 0 50% 0)";
+      detailOverlay.setAttribute("aria-hidden", "true");
+    }
+
+    closeDetailBtn.addEventListener("click", closeDayDetail);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && detailOverlay.classList.contains("active")) {
+        closeDayDetail();
+      }
+    });
+
+    async function typeEntriesSequentially(entries, sessionId) {
+      const cursor = document.createElement("span");
+      cursor.className = "cursor";
+
+      for (let i = 0; i < entries.length; i++) {
+        if (sessionId !== activeTypingSession) return;
+
+        const entry = entries[i];
+        const rowEl = document.createElement("div");
+        rowEl.className = "transport-item";
+
+        const timeEl = document.createElement("span");
+        timeEl.className = "transport-time";
+
+        const descWrapper = document.createElement("span");
+        const descTextEl = document.createElement("span");
+        descTextEl.className = "transport-desc";
+
+        descWrapper.appendChild(descTextEl);
+        rowEl.appendChild(timeEl);
+        rowEl.appendChild(descWrapper);
+        transportContainer.appendChild(rowEl);
+
+        timeEl.appendChild(cursor);
+        for (const char of entry.time) {
+          if (sessionId !== activeTypingSession) return;
+          timeEl.insertBefore(document.createTextNode(char), cursor);
+          await sleep(32);
+        }
+
+        await sleep(90);
+
+        descWrapper.appendChild(cursor);
+        for (const char of entry.text) {
+          if (sessionId !== activeTypingSession) return;
+          descTextEl.textContent += char;
+          await sleep(24);
+        }
+
+        await sleep(160);
+      }
+    }
+
+    function sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+  </script>
+</body>
+</html>
