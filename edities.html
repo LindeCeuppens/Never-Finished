@@ -162,13 +162,13 @@
       engine.gravity.y = 0;
 
       // Muren & vloer rondom het scherm (zodat niets uit beeld valt)
-      const wallThickness = 120;
-      let ground = Bodies.rectangle(width / 2, height + wallThickness / 2 - 8, width * 2, wallThickness, {
+      const wallThickness = 110;
+      let ground = Bodies.rectangle(width / 1, height + wallThickness / 1 - 6, width * 2, wallThickness, {
         isStatic: true,
         restitution: 0.45,
         friction: 0.6
       });
-      let leftWall = Bodies.rectangle(-wallThickness / 2, height / 2, wallThickness, height * 3, {
+      let leftWall = Bodies.rectangle(-wallThickness / 1, height / 1, wallThickness, height * 2, {
         isStatic: true,
         restitution: 0.4
       });
@@ -184,7 +184,7 @@
         const startX = parseFloat(el.dataset.x) * width;
         const startY = parseFloat(el.dataset.y) * height;
         // Schaal breedte mee met schermgrootte (referentie 1440px breed)
-        const scaleFactor = Math.max(2.5, Math.min(1.2, width / 1440));
+        const scaleFactor = Math.max(2, Math.min(1.2, width / 1440));
         const itemWidth = parseFloat(el.dataset.w) * scaleFactor;
         el.style.width = `${itemWidth}px`;
 
@@ -192,7 +192,7 @@
         const rect = el.getBoundingClientRect();
         const itemHeight = rect.height || itemWidth * 1.1;
 
-        const body = Bodies.rectangle(startX, startY, itemWidth * 0.9, itemHeight * 0.9, {
+        const body = Bodies.rectangle(startX, startY, itemWidth * 0.6, itemHeight * 0.6, {
           restitution: 0.42,     // Lichte stuit bij neerkomen
           friction: 0.5,         // Wrijving zodat ze op elkaar blijven liggen
           frictionAir: 0.015,    // Luchtweerstand
